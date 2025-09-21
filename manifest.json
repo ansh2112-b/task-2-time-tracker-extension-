@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Productivity Tracker",
+  "version": "1.0",
+  "description": "Tracks time spent on websites and provides productivity analytics.",
+  "permissions": ["tabs", "storage"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["dashboard.html", "dashboard.js", "dashboard.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>✨ Productivity Tracker</title>
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 20px;
+      width: 280px;
+      background: #f7f9fc;
+      text-align: center;
+      color: #333;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      color: #2575fc;
+    }
+
+    p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 20px;
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .stat {
+      flex: 1;
+      background: #fff;
+      margin: 0 5px;
+      padding: 12px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+      color: #2575fc;
+    }
+
+    button {
+      background: #2575fc;
+      color: #fff;
+      border: none;
+      padding: 12px;
+      border-radius: 12px;
+      width: 100%;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+
+    button:hover {
+      background: #1b5ed7;
+    }
+  </style>
+</head>
+<body>
+  <h2>✨ Productivity Tracker</h2>
+  <p>Your daily focus stats</p>
+
+  <div class="stats">
+    <div class="stat">
+      <strong id="productive-time">--</strong>
+      Productive
+    </div>
+    <div class="stat">
+      <strong id="unproductive-time">--</strong>
+      Unproductive
+    </div>
+  </div>
+
+  <button id="openDashboard">📊 Open Dashboard</button>
+
+  <script src="popup.js"></script>
+</body>
+</html>

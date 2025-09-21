@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🌤 Weather Buddy 2.0</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.5s ease;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      color: #333;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 25px;
+      border-radius: 20px;
+      text-align: center;
+      width: 350px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+      transition: transform 0.3s;
+      backdrop-filter: blur(10px);
+    }
+
+    .container:hover {
+      transform: scale(1.02);
+    }
+
+    h2 {
+      margin-bottom: 15px;
+      color: #0077b6;
+    }
+
+    input {
+      padding: 12px;
+      width: 80%;
+      border-radius: 10px;
+      border: 2px solid #0077b6;
+      margin: 10px 0;
+      outline: none;
+      font-size: 14px;
+      transition: 0.2s;
+    }
+
+    input:focus {
+      border-color: #00b4d8;
+      box-shadow: 0 0 5px #00b4d8;
+    }
+
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      background: #0077b6;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #0096c7;
+    }
+
+    .weather {
+      margin-top: 15px;
+      font-size: 16px;
+      color: #444;
+      animation: fadeIn 0.6s ease;
+    }
+
+    .temp {
+      font-size: 38px;
+      font-weight: bold;
+      margin: 8px 0;
+      color: #ff9800;
+    }
+
+    .emoji {
+      font-size: 50px;
+      margin-bottom: 10px;
+    }
+
+    .suggestions {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #0077b6;
+    }
+
+    .city-btn {
+      background: #90e0ef;
+      color: #023e8a;
+      border: none;
+      padding: 6px 12px;
+      margin: 4px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: 0.2s;
+    }
+
+    .city-btn:hover {
+      background: #00b4d8;
+      color: white;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🌤 Weather Buddy 2.0</h2>
+    <p>Type your city or pick one 👇</p>
+    <input type="text" id="cityInput" placeholder="Enter city name...">
+    <button onclick="getWeather()">Check Weather</button>
+    <div class="weather" id="weatherResult"></div>
+
+    <!-- Suggestions -->
+    <div class="suggestions">
+      <p>Try: 
+        <button class="city-btn" onclick="quickSearch('London')">London</button>
+        <button class="city-btn" onclick="quickSearch('New York')">New York</button>
+        <button class="city-btn" onclick="quickSearch('Tokyo')">Tokyo</button>
+        <button class="city-btn" onclick="quickSearch('Mumbai')">Mumbai</button>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const apiKey = "59a32b5e742d3ca8ad2f5cd18b2004d8"; // Replace with OpenWeatherMap API key
+
+    function getWeatherEmoji(description) {
+      if (description.includes("cloud")) return "☁️";
+      if (description.includes("rain")) return "🌧";
+      if (description.includes("clear")) return "☀️";
+      if (description.includes("snow")) return "❄️";
+      if (description.includes("storm")) return "⚡";
+      return "🌍";
+    }
+
+    function setBackground(description) {
+      if (description.includes("clear")) {
+        document.body.style.background = "linear-gradient(135deg, #fceabb, #f8b500)";
+      } else if (description.includes("cloud")) {
+        document.body.style.background = "linear-gradient(135deg, #bdc3c7, #2c3e50)";
+      } else if (description.includes("rain")) {
+        document.body.style.background = "linear-gradient(135deg, #667db6, #0082c8, #0082c8, #667db6)";
+      } else if (description.includes("snow")) {
+        document.body.style.background = "linear-gradient(135deg, #e0eafc, #cfdef3)";
+      } else {
+        document.body.style.background = "linear-gradient(135deg, #74ebd5, #9face6)";
+      }
+    }
+
+    async function getWeather(cityName = null) {
+      const city = cityName || document.getElementById("cityInput").value;
+      if (!city) { alert("⚠ Please enter a city name!"); return; }
+
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.cod === "404") {
+          document.getElementById("weatherResult").innerHTML = `<p>❌ City not found</p>`;
+          return;
+        }
+
+        const weatherDescription = data.weather[0].description;
+        const temp = data.main.temp;
+        const humidity = data.main.humidity;
+        const wind = data.wind.speed;
+        const emoji = getWeatherEmoji(weatherDescription);
+
+        // Save last city
+        localStorage.setItem("lastCity", city);
+
+        // Change background
+        setBackground(weatherDescription);
+
+        document.getElementById("weatherResult").innerHTML = `
+          <div class="emoji">${emoji}</div>
+          <div class="temp">${temp}°C</div>
+          <p><b>${data.name}, ${data.sys.country}</b></p>
+          <p>${weatherDescription}</p>
+          <p>💨 Wind: ${wind} m/s</p>
+          <p>💧 Humidity: ${humidity}%</p>
+        `;
+      } catch (error) {
+        document.getElementById("weatherResult").innerHTML = `<p>⚠ Error fetching data</p>`;
+      }
+    }
+
+    function quickSearch(city) {
+      document.getElementById("cityInput").value = city;
+      getWeather(city);
+    }
+
+    document.getElementById("cityInput").addEventListener("keypress", function(event) {
+      if (event.key === "Enter") {
+        getWeather();
+      }
+    });
+
+    // Load last searched city on page load
+    window.onload = function() {
+      const lastCity = localStorage.getItem("lastCity");
+      if (lastCity) {
+        getWeather(lastCity);
+      }
+    };
+  </script>
+</body>
+</html>
+
